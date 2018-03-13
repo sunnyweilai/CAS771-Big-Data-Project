@@ -42,4 +42,24 @@ color_sets = np.repeat(color_sets.values, color_sets['quantity'].values, axis=0)
 color_sets = pd.DataFrame(color_sets, columns=['set_num', 'set_name', 'theme_id', 'theme', 'root_id', 'rgba', 'year', 'quantity'])
 color_sets = color_sets.drop('quantity', axis=1)
 
-print(color_sets)
+# print(color_sets)
+
+# ------------------------------color frequency analysis
+freq_tbl = pd.DataFrame.filter(color_sets, items = ['year', 'rgba'])
+# print(freq_tbl)
+
+# define a function to add a new column -- 'n' to fre_tbl
+# def add_n(freq_tbl):
+#     freq_tbl['n'] = freq_tbl['rgba'].count()
+#     return freq_tbl
+#
+# freq_tbl = freq_tbl.groupby(['year', 'rgba'])
+# freq_tbl = freq_tbl.apply(add_n)
+# print(freq_tbl)
+
+
+# create new table to calculate the frequency of each color in every year
+freq_tbl = freq_tbl.sort_values(by = ['year','rgba'], ascending = True)
+freq_tbl['n'] = freq_tbl.groupby(['year', 'rgba'])['rgba'].transform('count')
+freq_tbl['percentage'] = freq_tbl['n'].divide(freq_tbl.groupby(['year'])['n'].transform('count'))
+print(freq_tbl)
