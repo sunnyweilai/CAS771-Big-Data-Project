@@ -1,8 +1,14 @@
 import numpy as np
 import pandas as pd
+from plotnine import *
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 import csv
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+
 
 # from subprocess import check_output
 # print(check_output(["ls", "lego_database"]).decode("utf8"))
@@ -61,5 +67,44 @@ freq_tbl = pd.DataFrame.filter(color_sets, items = ['year', 'rgba'])
 # create new table to calculate the frequency of each color in every year
 freq_tbl = freq_tbl.sort_values(by = ['year','rgba'], ascending = True)
 freq_tbl['n'] = freq_tbl.groupby(['year', 'rgba'])['rgba'].transform('count')
-freq_tbl['percentage'] = freq_tbl['n'].divide(freq_tbl.groupby(['year'])['n'].transform('count'))
-print(freq_tbl)
+freq_tbl['percent'] = freq_tbl['n'].divide(freq_tbl.groupby(['year'])['n'].transform('count'))
+# print(freq_tbl)
+
+# ----------------try to use plotnine to make a plot
+pal = (color_sets['rgba']).unique()
+pal = np.unique(pal)
+# # print(pal)
+#
+breaks = np.arange(1950,2018,10)
+# print(breaks)
+uni_color_graph = (ggplot(freq_tbl,aes(x='year', y='percent', fill = 'rgba')) + geom_col(width = 1) +
+scale_fill_manual(values = pal) +
+scale_x_discrete(limits = breaks) )
+# theme(panel_background = element_rect(fill = "#f0f0f0"),
+# plot_background = element_rect(fill = "#f8f8f8"),
+# text = element_text(size  = 13),
+# axis_title = element_text(size = 9, color = "gray15"),
+# legend_position = "none",
+# axis_text_y = element_blank(),
+# axis_ticks = element_blank(),
+# panel_grid = element_blank()))
+
+uni_color_graph.save(filename="myPlot3.png", width= 6, height= 4)
+
+
+
+
+# -------------------try sns to make a plot
+# pal = (color_sets['rgba']).unique()
+# pal = np.unique(pal)
+# # print(pal)
+
+# uni_col_graph = sns.barplot(x='year', y= 'rgba', palette=pal, data=freq_tbl)
+# uni_col_graph = sns.barplot(x='year', y= 'rgba', hue=pal,data=freq_tbl)
+# uni_col_graph.savefig("figure-2.png")
+
+
+
+
+
+
